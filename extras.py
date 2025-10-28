@@ -1,0 +1,1 @@
+#Sonidos, alertas, y estadísticas.
