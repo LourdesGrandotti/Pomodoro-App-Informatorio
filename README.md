@@ -17,5 +17,5 @@ El objetivo principal es fomentar la **organización, productividad y buenas pr�
 ---
 
 ## 📚 Créditos
-Grandotti Lourdes (Scrum Master), Ibañes Tamara (Dev Backend 1), Edgardo (Dev Backend 2), CYNTHIA JOHANNA MIRANDA MUÑOZ (Frontend 1), aldo moreyra (Frontend 2), Nestor Abel Sosa (Frontend 3), Acosta Diego Raúl (Tester)
+Grandotti Lourdes (Scrum Master), Ibañez Tamara Soledad (Dev Backend 1), López Alcorta Edgardo Nicolás (Dev Backend 2), Miranda Muñoz Cynthia Johanna (Frontend 1), Aldo Javier Moreyra (Frontend 2), Nestor Abel Sosa (Frontend 3), Acosta Diego Raúl (Tester)
 
