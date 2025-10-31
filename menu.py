@@ -8,7 +8,7 @@ class Aplicacion:
     def __init__(self, root):
         self.root = root
         self.root.title("Gestor de Tareas con Cronómetro")
-        self.root.geometry("400x300")
+        self.root.geometry("400x300")  
 
         # Variable para almacenar la tarea actual
         self.tarea_actual = tk.StringVar(value="Ninguna tarea")
