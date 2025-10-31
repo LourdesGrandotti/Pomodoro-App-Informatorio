@@ -81,7 +81,7 @@ class Aplicacion:
         # Ventana para ingresar la tarea
         ventana_tarea = tk.Toplevel(self.root)
         ventana_tarea.title("Agregar Tarea")
-        ventana_tarea.geometry("300x100")
+        ventana_tarea.geometry("300x200")
         ventana_tarea.resizable(False, False)
 
         ttk.Label(ventana_tarea, text="Nombre de la tarea:").pack(pady=10)
