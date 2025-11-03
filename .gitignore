@@ -1,0 +1,48 @@
+# ################ #
+# Python General #
+# ################ #
+
+# Entornos Virtuales
+# Ignora la carpeta del entorno virtual para no subir cientos de megabytes de librerías.
+venv/
+.venv/
+env/
+.env/
+
+# Archivos de Caché de Python
+# Python los genera automáticamente y no deben estar en el repositorio.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
+# ################################## #
+# Archivos Específicos del Proyecto #
+# ################################## #
+
+# Archivos de Datos y Bases de Datos
+# ¡MUY IMPORTANTE! Ignora los archivos de datos para no subir las tareas personales
+# de cada usuario al repositorio.
+*.jsonl
+*.db
+*.sqlite3
+
+# Archivos de registro (logs)
+# Si tu aplicación genera archivos de registro de errores o actividad.
+*.log
+
+
+# ##################################### #
+# Archivos de Editor y Sistema Operativo #
+# ##################################### #
+
+# Visual Studio Code
+# Ignora la configuración local de tu editor.
+.vscode/
+
+# Archivos del Sistema Operativo
+# Basura generada por macOS, Windows y Linux.
+.DS_Store
+Thumbs.db
+desktop.ini
