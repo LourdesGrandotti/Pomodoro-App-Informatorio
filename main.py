@@ -1,109 +1,163 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-from datetime import datetime
+from tkinter import messagebox
+import os
+import random
+import winsound
 
-class GestorPomodoro:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Gestor de Tareas - Pomodoro")
-        self.root.geometry("500x500")
-        self.root.resizable(False, False)
+def reproducir_sonido(tipo="inicio"):
+    if tipo == "inicio":
+        winsound.Beep(1000, 200)
+    elif tipo == "pausa":
+        winsound.Beep(600, 300)
+    elif tipo == "final":
+        winsound.Beep(800, 500)
 
-        # Variables
-        self.tarea_actual = tk.StringVar(value="Ninguna tarea")
-        self.tiempo_acumulado = tk.StringVar(value="00:00:00")
-        self.tiempo_inicio = None
-        self.cronometro_activo = False
-        self.lista_tareas = []
 
-        # Reloj central acumulado
-        reloj_frame = ttk.Frame(root)
-        reloj_frame.pack(fill='x', pady=10)
-        ttk.Label(reloj_frame, text="Tiempo acumulado:", font=("Helvetica", 12)).pack()
-        self.reloj_label = ttk.Label(reloj_frame, textvariable=self.tiempo_acumulado, font=("Consolas", 24))
-        self.reloj_label.pack()
+#Colores temáticos
+COLOR_FONDO = "#caf6d8"
+COLOR_TEXTO = "#293e55"
+COLOR_RELOJ = "#5dade2"
+COLOR_BOTON = "#f7c59f"
+COLOR_BOTON_ACCION = "#82e0aa"
+COLOR_BOTON_ALERTA = "#f1948a"
 
-        # Tarea actual
-        ttk.Label(root, text="Tarea actual:", font=("Helvetica", 12)).pack(pady=5)
-        ttk.Label(root, textvariable=self.tarea_actual, font=("Helvetica", 12)).pack()
+# 🪟 Ventana principal
+ventana = tk.Tk()
+ventana.title("🌈 Reloj con Tareas Seleccionables")
+ventana.geometry("420x460")
+ventana.resizable(False, False)
+ventana.configure(bg=COLOR_FONDO)
 
-        # Lista de tareas con scroll
-        ttk.Label(root, text="Lista de tareas:", font=("Helvetica", 12)).pack(pady=10)
-        lista_frame = ttk.Frame(root)
-        lista_frame.pack(fill='both', expand=True, padx=10)
+# Variables del reloj
+cronometro_activo = False
+tiempo_segundos = 0
+tarea_actual = tk.StringVar(value="(ninguna)")
+tiempo_tareas = {}
 
-        scrollbar = ttk.Scrollbar(lista_frame)
-        scrollbar.pack(side='right', fill='y')
+#Mensajes motivadores
+mensajes_divertidos = [
+    "¡Vamos con todo! 💪",
+    "¡Sos una máquina de enfoque! 🚀",
+    "¡A romperla con esta tarea! 🔥",
+    "¡Tu tiempo vale oro! ⏳",
+    "¡Pomodoro power! 🍅"
+]
 
-        self.caja_tareas = tk.Listbox(lista_frame, yscrollcommand=scrollbar.set, height=8)
-        self.caja_tareas.pack(side='left', fill='both', expand=True)
-        scrollbar.config(command=self.caja_tareas.yview)
+# Cargar tiempos desde archivo
+def cargar_tiempos():
+    if os.path.exists("tareas_registradas.txt"):
+        with open("tareas_registradas.txt", "r") as file:
+            for linea in file:
+                tarea, tiempo = linea.strip().split(": ")
+                tiempo_tareas[tarea] = int(tiempo)
 
-        # Botón "+"
-        ttk.Button(root, text="+", command=self.mostrar_menu).pack(pady=10)
+#Guardar tiempos
+def guardar_tiempos():
+    with open("tareas_registradas.txt", "w") as file:
+        for tarea, tiempo in tiempo_tareas.items():
+            file.write(f"{tarea}: {tiempo}\n")
 
-        # Iniciar reloj acumulado
-        self.iniciar_cronometro()
+#Formato de tiempo
+def formato_tiempo(segundos):
+    minutos = segundos // 60
+    seg = segundos % 60
+    return f"{minutos:02d}:{seg:02d}"
 
-    def iniciar_cronometro(self):
-        if not self.cronometro_activo:
-            self.tiempo_inicio = datetime.now()
-            self.cronometro_activo = True
-            self.actualizar_cronometro()
+#Actualizar cronómetro
+def actualizar_cronometro():
+    global tiempo_segundos
+    if cronometro_activo:
+        tiempo_segundos += 1
+        etiqueta_tiempo.config(text=formato_tiempo(tiempo_segundos))
+        #Cambio de color dinámico
+        colores = ["#5dade2", "#58d68d", "#f5b041", "#af7ac5",  "#f1948a"]
+        etiqueta_tiempo.config(fg=random.choice(colores))
+        ventana.after(1000, actualizar_cronometro)
 
-    def actualizar_cronometro(self):
-        if self.cronometro_activo and self.tiempo_inicio:
-            transcurrido = (datetime.now() - self.tiempo_inicio).total_seconds()
-            horas = int(transcurrido // 3600)
-            minutos = int((transcurrido % 3600) // 60)
-            segundos = int(transcurrido % 60)
-            self.tiempo_acumulado.set(f"{horas:02d}:{minutos:02d}:{segundos:02d}")
-            self.root.after(1000, self.actualizar_cronometro)
+# Iniciar
+def iniciar():
+    global cronometro_activo
+    tarea = tarea_actual.get()
+    if tarea == "(ninguna)":
+        messagebox.showwarning("⛔ Atención", "Seleccioná una tarea antes de iniciar.")
+        return
+    if not cronometro_activo:
+        cronometro_activo = True
+        reproducir_sonido("inicio")
+        actualizar_cronometro()
+        messagebox.showinfo("🎉 ¡A trabajar!", random.choice(mensajes_divertidos))
 
-    def mostrar_menu(self):
-        menu = tk.Toplevel(self.root)
-        menu.title("Opciones")
-        menu.geometry("300x200")
-        menu.resizable(False, False)
+# Pausar
+def pausar():
+    global cronometro_activo
+    cronometro_activo = False
 
-        ttk.Label(menu, text="Selecciona una opción:", font=("Helvetica", 10)).pack(pady=10)
-        ttk.Button(menu, text="Agregar Tarea", command=self.agregar_tarea).pack(pady=5)
-        ttk.Button(menu, text="Ver Estadísticas", command=self.ver_estadisticas).pack(pady=5)
-        ttk.Button(menu, text="Cerrar", command=menu.destroy).pack(pady=10)
+# Reiniciar
+def reiniciar():
+    global tiempo_segundos
+    pausar()
+    tiempo_segundos = 0
+    etiqueta_tiempo.config(text="00:00", fg=COLOR_RELOJ)
 
-    def agregar_tarea(self):
-        ventana = tk.Toplevel(self.root)
-        ventana.title("Agregar Tarea")
-        ventana.geometry("300x150")
-        ventana.resizable(False, False)
+#Finalizar tarea
+def finalizar_tarea():
+    global tiempo_segundos
+    tarea = tarea_actual.get()
+    if tarea == "(ninguna)":
+        messagebox.showwarning("⛔ Atención", "Seleccioná una tarea para finalizar.")
+        return
+    pausar()
+    if tarea not in tiempo_tareas:
+        tiempo_tareas[tarea] = 0
+    tiempo_tareas[tarea] += tiempo_segundos
+    guardar_tiempos()
+    messagebox.showinfo("✅ Tiempo registrado",
+                        f"📝 Tarea: {tarea}\n⏱️ Tiempo total: {formato_tiempo(tiempo_tareas[tarea])}")
+    reiniciar()
 
-        ttk.Label(ventana, text="Nombre de la tarea:").pack(pady=10)
-        entrada = ttk.Entry(ventana, width=30)
-        entrada.pack(pady=5)
+# Mostrar resumen
+def mostrar_resumen():
+    if not tiempo_tareas:
+        messagebox.showinfo("📋 Resumen", "Todavía no hay tareas registradas.")
+        return
+    resumen = "⏱️ Tiempo total por tarea:\n\n"
+    for tarea, segundos in tiempo_tareas.items():
+        resumen += f"• {tarea}: {formato_tiempo(segundos)}\n"
+    messagebox.showinfo("📈 Resumen de tiempo", resumen)
 
-        def guardar():
-            tarea = entrada.get().strip()
-            if tarea:
-                self.tarea_actual.set(tarea)
-                self.lista_tareas.append(tarea)
-                self.caja_tareas.insert(tk.END, tarea)
-                ventana.destroy()
-            else:
-                messagebox.showwarning("Advertencia", "Por favor, ingresa una tarea.")
+# Interfaz gráfica
+etiqueta_titulo = tk.Label(ventana, text="🌟 Reloj con Menú de Tareas", font=("Comic Sans MS", 16, "bold"),
+                           fg=COLOR_TEXTO, bg=COLOR_FONDO)
+etiqueta_titulo.pack(pady=10)
 
-        ttk.Button(ventana, text="Guardar", command=guardar).pack(pady=10)
+# Menú de tareas
+tareas = ["(ninguna)", "Estudiar", "Leer", "Ejercicio", "Descansar", "Otro"]
+etiqueta_menu = tk.Label(ventana, text="Seleccioná una tarea:", font=("Helvetica", 11),
+                         bg=COLOR_FONDO, fg=COLOR_TEXTO)
+etiqueta_menu.pack()
 
-    def ver_estadisticas(self):
-        messagebox.showinfo(
-            "Estadísticas",
-            f"Tarea actual: {self.tarea_actual.get()}\n"
-            f"Tareas en lista: {len(self.lista_tareas)}\n"
-            f"Tiempo acumulado: {self.tiempo_acumulado.get()}"
-        )
+menu_tareas = tk.OptionMenu(ventana, tarea_actual, *tareas)
+menu_tareas.config(bg="#f9e79f", font=("Helvetica", 10))
+menu_tareas.pack(pady=5)
 
-# Ejecutar aplicación
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = GestorPomodoro(root)
-    root.mainloop()
-    
+# Cronómetro
+etiqueta_tiempo = tk.Label(ventana, text="00:00", font=("Courier", 44, "bold"), fg=COLOR_RELOJ, bg=COLOR_FONDO)
+etiqueta_tiempo.pack(pady=20)
+
+# Botones de control
+frame_botones = tk.Frame(ventana, bg=COLOR_FONDO)
+frame_botones.pack(pady=10)
+
+tk.Button(frame_botones, text="▶ Iniciar", command=iniciar, width=10, bg=COLOR_BOTON_ACCION).grid(row=0, column=0, padx=5)
+tk.Button(frame_botones, text="⏸ Pausar", command=pausar, width=10, bg="#f9e79f").grid(row=0, column=1, padx=5)
+tk.Button(frame_botones, text="🔄 Reiniciar", command=reiniciar, width=10, bg="#d7bde2").grid(row=0, column=2, padx=5)
+
+# Botón finalizar tarea
+tk.Button(ventana, text="✅ Finalizar tarea actual", command=finalizar_tarea, width=25, bg="#d4efdf").pack(pady=5)
+
+# Botón resumen
+tk.Button(ventana, text="📊 Mostrar resumen total", command=mostrar_resumen, width=25, bg="#fadbd8").pack(pady=5)
+
+# Iniciar aplicación
+cargar_tiempos()
+ventana.mainloop()
