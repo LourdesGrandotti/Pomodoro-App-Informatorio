@@ -15,6 +15,34 @@ Desarrollar una aplicación funcional y modular que permita gestionar el tiempo 
 El objetivo principal es fomentar la **organización, productividad y buenas prácticas de programación en equipo**.
 
 ---
+## 🧭 Estado del proyecto
+
+> ✅ **Versión funcional estable** — la aplicación cumple su propósito principal de medir tiempos de tareas con cronómetro Pomodoro.  
+> Desarrollada con **Tkinter**, permite seleccionar tareas, registrar el tiempo trabajado y guardar los datos automáticamente en un archivo.
+
+---
+
+### ⚙️ Funcionalidades implementadas
+- ⏱️ Cronómetro con actualización dinámica de color.  
+- 💾 Registro y guardado automático de tiempos por tarea.  
+- 🧩 Menú desplegable para seleccionar tareas.  
+- 🔊 Reproducción de sonidos al iniciar, pausar y finalizar.  
+- 💬 Mensajes motivacionales aleatorios.  
+- 🕹️ Botones de control: iniciar, pausar, reiniciar, finalizar tarea y mostrar resumen.  
+
+---
+
+### 🚧 Próximas mejoras sugeridas  
+- 📝 Posibilidad de **editar o eliminar tareas registradas**.   
+
+---
+
+### 💻 Tecnologías utilizadas
+- 🐍 **Python 3.x**  
+- 🪟 **Tkinter** — interfaz gráfica  
+- 🔉 **winsound** — alertas sonoras  
+
+---
 
 ## 📚 Créditos
 Grandotti Lourdes (Scrum Master), Ibañez Tamara Soledad (Dev Backend 1), López Alcorta Edgardo Nicolás (Dev Backend 2), Miranda Muñoz Cynthia Johanna (Frontend 1), Aldo Javier Moreyra (Frontend 2), Nestor Abel Sosa (Frontend 3), Acosta Diego Raúl (Tester)
